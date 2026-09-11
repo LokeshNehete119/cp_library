@@ -5,7 +5,7 @@ using ll = long long;
 
 /*-------------------------- DSU -------------------------*/
 
-struct DSU {
+struct DSU{
     vector<ll> parent, sz;
     ll components;
 
@@ -35,5 +35,4 @@ struct DSU {
     ll size(ll x){
         return sz[find(x)];
     }
-
 };

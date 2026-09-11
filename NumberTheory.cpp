@@ -4,14 +4,6 @@ using namespace std;
 using ll = long long;
 const ll M = 1e9+7;
 
-/*-------------------------- FUNCTIONS -------------------------*/
-
-bool isSquare(ll x) { return (ll)sqrt(x)*(ll)sqrt(x) == x; }
-
-ll ceil(ll x, ll y) { return (x+y-1)/y; }
-
-ll log2(ll x) { return x ? 63-__builtin_clzll(x) : -1; }
-
 bool isPrime(ll n) {
     if(n<=1) return false;
     if(n==2 || n==3) return true;
@@ -53,6 +45,15 @@ vector<ll> SPF(ll n){
     return spf;
 }
 
+vector<ll> fastFactorize(ll n, vector<ll> &spf) {
+    vector<ll> factors;
+    while (n>1) {
+        factors.push_back(spf[n]);
+        n /= spf[n];
+    }
+    return factors;
+}
+
 vector<ll> divisors(ll n) {
     vector<ll> d;
     for(ll i=1; i*i<=n; i++){
@@ -68,7 +69,7 @@ vector<ll> divisors(ll n) {
 vector<bool> sieve(int n){
     vector<bool> prime(n+1, 1);
     prime[0] = prime[1] = 0;
-
+    
     for(ll i=2; i*i<=n; i++){
         if(prime[i]){
             for(ll j=i*i; j<=n; j+=i){
@@ -76,7 +77,7 @@ vector<bool> sieve(int n){
             }
         }
     }
-
+    
     return prime;
 }
 
@@ -90,24 +91,20 @@ ll modpow(ll a, ll b) {
     return res;
 }
 
-ll modinv(ll a){
-    return modpow(a, M-2);
-}
+ll modinv(ll a){  return modpow(a, M-2); }
 
+/*-------------------------- COMBINATORICS -------------------------*/
 
 const int N = 1e6;
-
 vector<ll> fact(N+1), invfact(N+1);
 
 void precomputeFactorial(){
     fact[0] = 1;
-
     for(ll i=1; i<=N; i++){
         fact[i] = (fact[i-1]*i) % M;
     }
 
-    invfact[N] = modinv(fact[N]);
-
+    invfact[N] = modpow(fact[N], M-2);
     for(ll i=N-1; i>=0; i--){
         invfact[i] = (invfact[i+1]*(i+1)) % M;
     }
@@ -118,3 +115,9 @@ ll nCr(ll n, ll r){
 
     return (((fact[n]*invfact[r]) % M) * invfact[n-r]) % M;
 }
+
+/*-------------------------- BITS -------------------------*/
+
+// (a|b) = (a^b) + (a&b)
+// (a+b) = (a|b) + (a&b) = (a^b) + 2*(a&b)
+// (a-b) = ((a|b)^b) - ((a|b)^a) = ((a&b)^a) - ((a&b)^b)
